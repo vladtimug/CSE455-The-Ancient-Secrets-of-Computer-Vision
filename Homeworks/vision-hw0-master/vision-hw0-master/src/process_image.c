@@ -56,29 +56,85 @@ void set_pixel(image im, int x, int y, int c, float v)
     }
 }
 
+/**
+ * @brief Make a copy of an image and return it
+ * 
+ * @param im 
+ * @return image 
+ */
 image copy_image(image im)
 {
     image copy = make_image(im.w, im.h, im.c);
-    // TODO Fill this in
+    copy.data = im.data;
     return copy;
 }
 
+/**
+ * @brief Convert image from RGB to Grayscale colorspace
+ * 
+ * @param im 
+ * @return image 
+ */
 image rgb_to_grayscale(image im)
 {
     assert(im.c == 3);
     image gray = make_image(im.w, im.h, 1);
-    // TODO Fill this in
+    
+    for(int x_coordinate = 0; x_coordinate < im.w; x_coordinate++)
+    {
+        for(int y_coordinate = 0; y_coordinate < im.h; y_coordinate++)
+        {
+            float red_pixel_value = get_pixel(im, x_coordinate, y_coordinate, 0);
+            float green_pixel_value = get_pixel(im, x_coordinate, y_coordinate, 1);
+            float blue_pixel_value = get_pixel(im, x_coordinate, y_coordinate, 2);
+            float gray_pixel_value = 0.299 * red_pixel_value + 0.587 * green_pixel_value + 0.114 * blue_pixel_value;
+            set_pixel(gray, x_coordinate, y_coordinate, 0, gray_pixel_value);
+        }
+    }
     return gray;
 }
 
+/**
+ * @brief Shift pixel values in image by the given amount without clamping
+ * 
+ * @param im 
+ * @param c 
+ * @param v 
+ */
 void shift_image(image im, int c, float v)
 {
-    // TODO Fill this in
+    for(int x_coordinate = 0; x_coordinate < im.w; x_coordinate++)
+    {
+        for(int y_coordinate = 0; y_coordinate < im.h; y_coordinate++)
+        {
+            float old_pixel_value = get_pixel(im, x_coordinate, y_coordinate, c);
+            float new_pixel_value = old_pixel_value  + v;
+            set_pixel(im, x_coordinate, y_coordinate, c, new_pixel_value);
+        }
+    }
 }
 
+/**
+ * @brief Clamp image pixel values to avoid byte overflow
+ * 
+ * @param im 
+ */
 void clamp_image(image im)
 {
-    // TODO Fill this in
+    for(int x_coordinate = 0; x_coordinate < im.w; x_coordinate++)
+    {
+        for(int y_coordinate = 0; y_coordinate < im.h; y_coordinate++)
+        {
+            for(int z_coordinate = 0; z_coordinate < im.c; z_coordinate++)
+            {
+                float pixel_value = get_pixel(im, x_coordinate, y_coordinate, z_coordinate);
+                if(pixel_value < 0)
+                    set_pixel(im, x_coordinate, y_coordinate, z_coordinate, 0);
+                else if(pixel_value > 1)
+                    set_pixel(im, x_coordinate, y_coordinate, z_coordinate, 1);
+            }
+        }
+    }
 }
 
 
