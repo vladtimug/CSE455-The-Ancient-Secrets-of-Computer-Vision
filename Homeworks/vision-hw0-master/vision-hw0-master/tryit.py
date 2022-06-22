@@ -30,5 +30,3 @@ shift_image(im, 1, .2)
 clamp_image(im)
 hsv_to_rgb(im)
 save_image(im, "dog_saturated")
-
-
